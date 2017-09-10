@@ -3,6 +3,7 @@
 import MySQLdb as mdb
 import datetime
 
+
 def getconnect():
     # consor =mdb.connect('localhost', 'root', 'cuilijia', 'mysql');
     consor = mdb.connect(host='123.206.16.129',  # 远程主机的ip地址，
