@@ -33,7 +33,7 @@ def geturllist(url):
        te = 'http' + item
 
        ans=mysqluser.ifexist("URLLIB",te)
-
+       #print (">"),
        if (ans == 0):
            mysqluser.insert1("URLLIB",te)
            mysqluser.insert1( "TEMURL", te)

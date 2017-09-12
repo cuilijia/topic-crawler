@@ -28,16 +28,17 @@ def finddata(url,number,txt):
        for j in range(0, len(voc['voc'])):
               num1.append(0)
 
-   stopwords = {}.fromkeys(['的', '包括', '等', '是', '我', ' ', '.', '', '  ',
-                          '。', '，', ',', ':', ';', '"', '_', '>', '；', '-',
-                          '/', '“', '”', '（', '）', '(', ')', '&', '？',  '：'])
+   #stopwords = {}.fromkeys(['的', '包括', '等', '是', '我', ' ', '.', '', '  ',
+   #                       '。', '，', ',', ':', ';', '"', '_', '>', '；', '-',
+   #                       '/', '“', '”', '（', '）', '(', ')', '&', '？',  '：',
+   #                       '哦'])
 
-     #with open(numtxt, 'r') as f:
-     # for line in f:
-     #     str_docIdx, str_wordIdx, str_cnt = line.split()
-     #     docIdx = int(str_docIdx)
-     #    wordIdx = int(str_wordIdx)
-     #     cnt = int(str_cnt)
+   stopwords = {}
+   stopwordsSrc = r'file/stopwords.txt'
+   with open(stopwordsSrc) as f:
+       for line in f:
+           stopwords[line.strip()] = True
+
 
    try:
      headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
@@ -58,12 +59,8 @@ def finddata(url,number,txt):
    pageCode2 = re.sub(pattern, "", pageCode)
    pattern = re.compile(r'<style.*?>.*?</style.*?>',re.S)
    pageCode2 = re.sub(pattern, "", pageCode2)
-   # print pageCode2
    pattern2 = re.compile(r'>(.*?)<',re.S)
-   # pattern = re.compile(r'div class="cTag-list">(.*?)<',re.S)
-   #pattern3 = re.compile(r'href="http(.*?)"',re.S)
    items1 = re.findall(pattern2, pageCode2)
-   #items2 = re.findall(pattern3, pageCode)
 
    if(len(items1) ==0):
        print ("one no-webpage!")
@@ -79,21 +76,23 @@ def finddata(url,number,txt):
 
        seg_list = jieba.cut(text, cut_all=False)
        for i in list(seg_list):
-        if ( i not in stopwords ):
-         key = 0
-         for a in voc['voc']:
-             if ( i == a ):
-                 key = 1
-                 break
-             else :
-                 key = 0
-         if ( key == 0 ):
+         if ( i not in stopwords ):
+           key = 0
+           for a in voc['voc']:
+               if ( i == a ):
+                   key = 1
+                   break
+               else :
+                   key = 0
+           if ( key == 0 ):
                   voc.loc[i] = {'voc': i}
                   num1.append(1)
-         else:
-            for j in range(0, len(voc['voc'])):
+           else:
+              for j in range(0, len(voc['voc'])):
                     if ( voc['voc'][j] == i ):
                         num1[j] += 1
+         else:
+             print (i)
 
 
    document = open(datatxt, "w+");

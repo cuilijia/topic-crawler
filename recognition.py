@@ -76,11 +76,11 @@ def featureSel(doc2term, term2doc, cate2docs):
         sumVal = 0
         for term in term2doc:
             # 如果是停用词, 则将CHI置零
-            '''
+
             if stopwords.get(voc['voc'][term - 1], False):
                 CHI_cat2term.setdefault(category, {})[term] = 0
                 continue
-            '''
+
             # 属于某类且包含term
             AVal = len(set(term2doc[term]).intersection(set(docs)))
             # 不属于某类但包含term

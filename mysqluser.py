@@ -5,13 +5,15 @@ import datetime
 
 
 def getconnect():
-    # consor =mdb.connect('localhost', 'root', 'cuilijia', 'mysql');
+    #consor =mdb.connect('localhost', 'root', 'cuilijia', 'mysql');
+    ''''''
     consor = mdb.connect(host='123.206.16.129',  # 远程主机的ip地址，
                        user='pink',  # MySQL用户名
                        db='apt',  # database名
                        passwd='pink_man',  # 数据库密码
                        port=3306)  # 数据库监听端口，默认3306
     # charset="utf8")  # 指定utf8编码的连接
+
     return consor
 
 def getfarconnect():
