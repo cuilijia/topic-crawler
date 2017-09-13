@@ -4,12 +4,13 @@ import cutwords
 import mysqluser
 
 def addword():
+
     with open('file/urlanalyse.data', 'r') as f:
         for line in f:
             str_docIdx, str_wordIdx, str_number, = line.split()
             wordIdx = int(str_wordIdx)
             number = int(str_number)
-            if (number > 40):
+            if (number > 30):
                 wname="a"
                 with open('file/vocabulary.txt', 'r') as f:
                     z=0
@@ -19,7 +20,11 @@ def addword():
                             wname = linen
                             break
                 #print (wname)
-                mysqluser.insertword(wname,number)
+                word = wname.replace('\n', '')
+                word = word.replace('\r', '')
+                word = word.replace(' ', '')
+                word = word.replace('　', '')
+                mysqluser.insertword(word,number)
 
 
 
@@ -34,8 +39,10 @@ def testfunc(url):
       return 1
 
 def recognize(num):
-    urlist = []
-    results=mysqluser.search2( "TEMURL")
+   urlist = []
+   results=mysqluser.search2( "TEMURL")
+   if(num<len(results)):
+
     for i in range(num):
         print results[i][0]
         urlist.append(results[i][0])
@@ -59,5 +66,7 @@ def recognize(num):
 
         else:
            return 0
-
+   else:
+        print("without useful page!")
+        return 0
 #S=recognize(1)

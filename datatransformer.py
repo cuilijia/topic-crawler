@@ -2,6 +2,11 @@
 import MySQLdb as mdb
 import datetime
 import re
+import urllib2
+import re
+import tool
+import sys
+import mysqluser
 
 def getconnect():
     # consor =mdb.connect('localhost', 'root', 'cuilijia', 'mysql');
@@ -252,7 +257,7 @@ def insert_TAG(IID,TID):
 
 a=[]
 list=[]
-list=search2("threatbook")
+#list=search2("threatbook")
 #a=search2("Intelligence_info")
 #transform("Intelligence_info",list)
 #insert("Tag_info","APT")
@@ -260,3 +265,31 @@ list=search2("threatbook")
 #Tag_info
 #search3("Tag_info")
 #search_tag("APT")
+
+url="https://x.threatbook.cn/nodev4/vb4/waparticle?threatInfoID=103"
+#url="https://x.threatbook.cn/article?threatInfoID=118"
+try:
+    headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
+    request = urllib2.Request(url, headers=headers)
+    response = urllib2.urlopen(request)
+    # pageCode = response.read()
+    pageCode = response.read().decode('utf-8')
+    tool.Tool()
+
+except urllib2.URLError as e:
+    if hasattr(e, 'reason'):
+        print '连接threatbook失败，错误原因', e.reason
+
+print ("get web success!")
+
+print pageCode
+
+#document = open('file/save.txt', "w+");
+#document.write(pageCode)
+#pattern3 = re.compile(r'href="http(.*?)"', re.S)
+
+#items2 = re.findall(pattern3, pageCode)
+
+#for item in items2:
+ #   if item != '':
+  #      te = 'http' + item

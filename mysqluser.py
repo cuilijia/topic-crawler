@@ -107,16 +107,18 @@ def searchword(word):
     word = word.replace('\r', '')
     word = word.replace(' ', '')
     word = word.replace('　', '')
-    sql = "SELECT * FROM WORDTOTAG WHERE word ='%s' limit 1" % (word)
+    sql = "SELECT * FROM WORDTOTAG WHERE word ='%s'" % (word)
     #sql = """SELECT * FROM %s """%(TABLE)
     try:
      cur.execute(sql)
      # 获取所有记录列表
      results = cur.fetchall()
      con.close()
+     #print results[0][0]
      return results
     except:
         print "Error: unable to fecth data"
+        return 0
     con.close()
 
 def insert1(TABLE,url):
@@ -144,13 +146,14 @@ def insertword(word,num):
     #if(len(result)!=0):
     #   print result[0][0]
     if(len(result)==0):
-      sql = """INSERT INTO WORDTOTAG (word,num,time) VALUES ('%s', '%d', '%s')"""%(word,num,dt)
-      try:
+     print ("insert successful")
+     sql = """INSERT INTO WORDTOTAG (word,num,time) VALUES ('%s', '%d', '%s')"""%(word,num,dt)
+     try:
        # 执行sql语句
        cur.execute(sql)
        # 提交到数据库执行
        con.commit()
-      except:
+     except:
        # Rollback in case there is any error
        con.rollback()
 
@@ -199,8 +202,38 @@ def delete1(TABLE,url):
 #http://www.freebuf.com/?s=APT
 #search1("APTLIB")
 #createtable("WORDTOTAG")
-#insert1("APTURL","http://www.freebuf.com/articles/web/27639.html")
-#insert1("APTLIB","http://www.freebuf.com/articles/web/27639.html")
+
+'''
+
+list=[]
+list.append("http://www.freebuf.com/news/115856.html")
+list.append("http://www.freebuf.com/articles/system/115612.html")
+list.append("http://www.freebuf.com/sectool/113050.html")
+list.append("http://www.freebuf.com/sectool/112300.html")
+list.append("http://www.freebuf.com/articles/network/112483.html")
+list.append("http://www.freebuf.com/articles/paper/111557.html")
+list.append("http://www.freebuf.com/articles/network/111490.html")
+list.append("http://www.freebuf.com/articles/security-management/111166.html")
+list.append("http://www.freebuf.com/news/110431.html")
+list.append("http://www.freebuf.com/articles/network/108637.html")
+list.append("http://www.freebuf.com/articles/network/107914.html")
+list.append("http://www.freebuf.com/news/106582.html")
+list.append("http://www.freebuf.com/news/106996.html")
+
+
+
+
+print "1"
+
+
+
+for x in list:
+  insert1("APTURL",x)
+  insert1("APTLIB",x)
+
+print "2"
+
+'''
 #test()
-#insertword("安全",3)
-#searchword(" ")
+#insertword("　　　安全",3)
+#searchword("nbsq")
