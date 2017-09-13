@@ -33,11 +33,13 @@ def finddata(url,number,txt):
    #                       '/', '“', '”', '（', '）', '(', ')', '&', '？',  '：',
    #                       '哦'])
 
-   stopwords = {}
+   key = 0
+   stopwords = []
    stopwordsSrc = r'file/stopwords.txt'
    with open(stopwordsSrc) as f:
        for line in f:
-           stopwords[line.strip()] = True
+           rs = line.replace('\n', '')
+           stopwords.append(rs)
 
 
    try:
@@ -76,23 +78,28 @@ def finddata(url,number,txt):
 
        seg_list = jieba.cut(text, cut_all=False)
        for i in list(seg_list):
-         if ( i not in stopwords ):
-           key = 0
-           for a in voc['voc']:
-               if ( i == a ):
+         for word in stopwords:
+            if (word == i+'\r'):
                    key = 1
                    break
-               else :
+            else:
                    key = 0
-           if ( key == 0 ):
+
+         if (key == 0):
+           inkey = 0
+           for a in voc['voc']:
+               if ( i == a ):
+                   inkey = 1
+                   break
+               else :
+                   inkey = 0
+           if ( inkey == 0 ):
                   voc.loc[i] = {'voc': i}
                   num1.append(1)
            else:
               for j in range(0, len(voc['voc'])):
                     if ( voc['voc'][j] == i ):
                         num1[j] += 1
-         else:
-             print (i)
 
 
    document = open(datatxt, "w+");

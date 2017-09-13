@@ -59,11 +59,13 @@ def featureSel(doc2term, term2doc, cate2docs):
     # 所有类别
     categories = list(cate2docs.keys())
     # 停用词词汇表
-    stopwords = {}
+    key = 0
+    stopwords = []
     stopwordsSrc = r'file/stopwords.txt'
     with open(stopwordsSrc) as f:
         for line in f:
-            stopwords[line.strip()] = True
+            rs = line.replace('\n', '')
+            stopwords.append(rs)
     # 训练数据数据词汇表
     vocSrc = r'file/vocabulary.txt'
     voc = pd.read_table(vocSrc, names=['voc'])
@@ -76,8 +78,15 @@ def featureSel(doc2term, term2doc, cate2docs):
         sumVal = 0
         for term in term2doc:
             # 如果是停用词, 则将CHI置零
+            for word in stopwords:
+                # print word
+                if (word == str(voc['voc'][term - 1]) + '\r'):
+                    key = 1
+                    break
+                else:
+                    key = 0
 
-            if stopwords.get(voc['voc'][term - 1], False):
+            if (key == 1):
                 CHI_cat2term.setdefault(category, {})[term] = 0
                 continue
 

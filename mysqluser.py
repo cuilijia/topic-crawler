@@ -2,7 +2,10 @@
 # 安装 MYSQL DB for python
 import MySQLdb as mdb
 import datetime
+import sys
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 def getconnect():
     #consor =mdb.connect('localhost', 'root', 'cuilijia', 'mysql');
@@ -11,8 +14,8 @@ def getconnect():
                        user='pink',  # MySQL用户名
                        db='apt',  # database名
                        passwd='pink_man',  # 数据库密码
-                       port=3306)  # 数据库监听端口，默认3306
-    # charset="utf8")  # 指定utf8编码的连接
+                       port=3306, # 数据库监听端口，默认3306
+                       charset="utf8")  # 指定utf8编码的连接
 
     return consor
 
@@ -97,6 +100,24 @@ def ifexist(TABLE,url):
     else:
        return 1
 
+def searchword(word):
+    con = getconnect()
+    cur = con.cursor()
+    word=word.replace('\n', '')
+    word = word.replace('\r', '')
+    word = word.replace(' ', '')
+    word = word.replace('　', '')
+    sql = "SELECT * FROM WORDTOTAG WHERE word ='%s' limit 1" % (word)
+    #sql = """SELECT * FROM %s """%(TABLE)
+    try:
+     cur.execute(sql)
+     # 获取所有记录列表
+     results = cur.fetchall()
+     con.close()
+     return results
+    except:
+        print "Error: unable to fecth data"
+    con.close()
 
 def insert1(TABLE,url):
     con = getconnect()
@@ -114,15 +135,43 @@ def insert1(TABLE,url):
      con.rollback()
     con.close()
 
+def insertword(word,num):
+    con = getconnect()
+    cur = con.cursor()
+    dt = datetime.datetime.now().strftime("%Y-%m-%d")
+    result=searchword(word)
+    #print word
+    #if(len(result)!=0):
+    #   print result[0][0]
+    if(len(result)==0):
+      sql = """INSERT INTO WORDTOTAG (word,num,time) VALUES ('%s', '%d', '%s')"""%(word,num,dt)
+      try:
+       # 执行sql语句
+       cur.execute(sql)
+       # 提交到数据库执行
+       con.commit()
+      except:
+       # Rollback in case there is any error
+       con.rollback()
+
+    con.close()
+
 def createtable(TABLE):
  # 如果数据表已经存在使用 execute() 方法删除表。
+ #set character_set_database=utf8;
+ #set character_set_server=utf8;
  #cur.execute("DROP TABLE IF EXISTS %s")%(TABLE)
  con = getconnect()
  cur = con.cursor()
  # 创建数据表SQL语句
  sql = """CREATE TABLE %s (
-             url  CHAR(255) NOT NULL,
-             time  DATE )"""%(TABLE)
+             word  CHAR(255) NOT NULL,
+             num   INT ,
+             time  DATE )
+             ENGINE = MyISAM
+             DEFAULT
+             CHARSET = utf8;"""%(TABLE)
+
 
  cur.execute(sql)
  print ("create table %s successful!"%(TABLE))
@@ -149,7 +198,9 @@ def delete1(TABLE,url):
 
 #http://www.freebuf.com/?s=APT
 #search1("APTLIB")
-#createtable("TEMURL")
+#createtable("WORDTOTAG")
 #insert1("APTURL","http://www.freebuf.com/articles/web/27639.html")
 #insert1("APTLIB","http://www.freebuf.com/articles/web/27639.html")
 #test()
+#insertword("安全",3)
+#searchword(" ")
